@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khutory Coin</title>
+    <link rel="shortcut icon" href="./images/favicon (1).ico">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+    <header>
+        <div class="header-item">
+            Coins mined
+                <div class="count" class="f-size">0</div>
+        </div>
+        <div class="header-item">
+            Coins per tap
+            <img src="" alt="">
+            <div id="tap"class="f-size">1</div>
+        </div>
+        <div class="header-item">
+            Next level
+            <div class="f-size" id="goal">300</div>
+        </div>
+
+
+    </header>
+    <div class="flex-container">
+            <hr class="hr1">
+        <div class="cont">
+            <div id="likeButton"></div>
+            <div id="effectsContainer"></div>    
+        </div>
+        <button onclick="add()" id="upgradeButton">Upgrade</button>
+        <div class="upgrade-message"></div>
+        <hr class="hr2">
+    </div>
+    <footer>
+        <a href="about.html" class="ft-itm">
+            <img src="./images/question.png" alt="?">
+            <figcaption>About game</figcaption>
+        </a>
+        <a href="#" class="ft-itm">
+            <div class="number">1</div>
+            <figcaption>Your level</figcaption>
+        </a>
+        <a href="menu.html" class="ft-itm">
+            <img src="./images/menu.png" alt="#" onclick="changeBackground()">
+            <figcaption>Menu</figcaption>
+        </a>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

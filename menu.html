@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="shortcut icon" href="./images/favicon (1).ico">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+    <header>
+        <h1>Вас вітають розробники тапалки<br> Khutory Coin!</h1>
+        <hr class="hr1">
+    </header>
+    <div class="flex-container">
+        <div class="menu">
+            <div class="code-container">
+                <label for="codes">Type your code:</label>
+                <input type="text" id="codes">
+                <button id="checkButton" onclick="getCode()">Try</button>
+
+                <div id="message"></div>
+                <h1 style="color: red;">Сторінка знаходиться в розробці!</h1>
+            </div>
+        </div>       
+
+    </div>
+    <footer>
+        <a href="about.html" class="ft-itm">
+            <img src="./images/question.png" alt="?">
+            <figcaption>About game</figcaption>
+        </a>
+        <a href="index.html" class="ft-itm" >
+            <img src="./images/home.png" alt="#" id="homeButton">
+            <figcaption>Home</figcaption>
+        </a>
+        <a href="menu.html" class="ft-itm">
+            <img src="./images/menu.png" alt="#" onclick="changeBackground()">
+            <figcaption>Menu</figcaption>
+        </a>
+    </footer>
+    <script src="./script.js"></script>
+</body>
+</html>
