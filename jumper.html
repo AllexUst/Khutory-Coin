@@ -79,14 +79,13 @@
         let gameOver = false;
         let gameStarted = false;
         let gravity = 0.93;
-        const jumpStrength = -15;
+        const jumpStrength = -16;
 
         const baseSpawnInterval = 900;
         const spawnVariance = 200;
-        const minObstacleSpacing = 350;
+        const minObstacleSpacing = 450;
         let currentSpawnInterval = baseSpawnInterval;
-        let obstacleSpeed = 7;
-        const maxObstacleSpeed = 15;
+        let obstacleSpeed = 9;
 
         function resetGame() {
             player.y = 220;
@@ -95,7 +94,7 @@
             obstacles = [];
             score = 0;
             gameOver = false;
-            obstacleSpeed = 7;
+            obstacleSpeed = 9;
             currentSpawnInterval = baseSpawnInterval;
             gameOverText.style.display = 'none';
         }
@@ -147,10 +146,6 @@
                 if (obstacle.x + obstacle.width < 0) {
                     obstacles.splice(index, 1);
                     score++;
-                    if (score % 5 === 0 && obstacleSpeed < maxObstacleSpeed) {
-                        obstacleSpeed++;
-                        currentSpawnInterval = Math.max(baseSpawnInterval - score * 50, 600);
-                    }
                 }
 
                 if (
@@ -190,6 +185,10 @@
             if (!player.isJumping) {
                 player.dy = jumpStrength;
                 player.isJumping = true;
+                a = gravity + 0.01;
+                gravity = a;
+                b = obstacleSpeed + 0.3;
+                obstacleSpeed = b;
             }
         }
 
