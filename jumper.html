@@ -12,10 +12,12 @@
         }
 
         canvas {
+
             display: block;
             background: #f7f7f7;
             border: 2px solid #000;
-            margin: 20px auto;
+            margin: 12vw auto;
+            margin-bottom: 5vw;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -76,12 +78,12 @@
         let score = 0;
         let gameOver = false;
         let gameStarted = false;
-        let gravity = 1;
+        let gravity = 0.93;
         const jumpStrength = -15;
 
         const baseSpawnInterval = 900;
         const spawnVariance = 200;
-        const minObstacleSpacing = 200;
+        const minObstacleSpacing = 350;
         let currentSpawnInterval = baseSpawnInterval;
         let obstacleSpeed = 7;
         const maxObstacleSpeed = 15;
