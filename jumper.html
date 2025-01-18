@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titarenko Dino Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            background: #f7f7f7;
+            border: 2px solid #000;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #gameOver, #orientationWarning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #333;
+            display: none;
+            text-align: center;
+        }
+
+        #orientationWarning {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="300"></canvas>
+    <div id="gameOver">Game Over! Press Space to Restart</div>
+    <div id="orientationWarning">Please rotate your device to landscape mode</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameOverText = document.getElementById('gameOver');
+        const orientationWarning = document.getElementById('orientationWarning');
+
+        let isLandscape = window.matchMedia("(orientation: landscape)").matches;
+
+        function checkOrientation() {
+            isLandscape = window.matchMedia("(orientation: landscape)").matches;
+            if (!isLandscape) {
+                orientationWarning.style.display = 'block';
+                canvas.style.display = 'none';
+            } else {
+                orientationWarning.style.display = 'none';
+                canvas.style.display = 'block';
+            }
+        }
+
+        // Initial check
+        checkOrientation();
+
+        // Listen for orientation changes
+        window.addEventListener('resize', checkOrientation);
+
+        const titarenkoImg = new Image();
+        titarenkoImg.src = 'assets/titarenko.jpg';
+
+        const obstacleImg = new Image();
+        obstacleImg.src = 'assets/razrab.jpg';
+
+        let player = { x: 50, y: 220, width: 50, height: 50, dy: 0, isJumping: false };
+        let obstacles = [];
+        let score = 0;
+        let gameOver = false;
+        let gameStarted = false;
+        let gravity = 1;
+        const jumpStrength = -15;
+
+        const baseSpawnInterval = 900;
+        const spawnVariance = 200;
+        const minObstacleSpacing = 200;
+        let currentSpawnInterval = baseSpawnInterval;
+        let obstacleSpeed = 7;
+        const maxObstacleSpeed = 15;
+
+        function resetGame() {
+            player.y = 220;
+            player.dy = 0;
+            player.isJumping = false;
+            obstacles = [];
+            score = 0;
+            gameOver = false;
+            obstacleSpeed = 7;
+            currentSpawnInterval = baseSpawnInterval;
+            gameOverText.style.display = 'none';
+        }
+
+        function startGame() {
+            if (!isLandscape) return; // Block start if orientation is incorrect
+            resetGame();
+            gameStarted = true;
+            gameLoop();
+            spawnObstacles();
+        }
+
+        function createObstacle() {
+            if (obstacles.length > 0) {
+                const lastObstacle = obstacles[obstacles.length - 1];
+                if (lastObstacle.x > canvas.width - minObstacleSpacing) {
+                    return;
+                }
+            }
+
+            const obstacle = {
+                x: canvas.width,
+                y: 220,
+                width: 50,
+                height: 50
+            };
+            obstacles.push(obstacle);
+        }
+
+        function spawnObstacles() {
+            if (gameOver || !gameStarted) return;
+
+            createObstacle();
+            const nextSpawn = currentSpawnInterval + Math.random() * spawnVariance - spawnVariance / 2;
+            setTimeout(spawnObstacles, Math.max(nextSpawn, 800));
+        }
+
+        function updateGame() {
+            if (gameOver) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.drawImage(titarenkoImg, player.x, player.y, player.width, player.height);
+
+            obstacles.forEach((obstacle, index) => {
+                obstacle.x -= obstacleSpeed;
+                ctx.drawImage(obstacleImg, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacles.splice(index, 1);
+                    score++;
+                    if (score % 5 === 0 && obstacleSpeed < maxObstacleSpeed) {
+                        obstacleSpeed++;
+                        currentSpawnInterval = Math.max(baseSpawnInterval - score * 50, 600);
+                    }
+                }
+
+                if (
+                    player.x < obstacle.x + obstacle.width &&
+                    player.x + player.width > obstacle.x &&
+                    player.y < obstacle.y + obstacle.height &&
+                    player.y + player.height > obstacle.y
+                ) {
+                    gameOver = true;
+                    gameStarted = false;
+                    gameOverText.style.display = 'block';
+                }
+            });
+
+            if (player.isJumping) {
+                player.dy += gravity;
+                player.y += player.dy;
+                if (player.y >= 220) {
+                    player.y = 220;
+                    player.isJumping = false;
+                }
+            }
+
+            ctx.fillStyle = '#333';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, 10, 30);
+        }
+
+        function gameLoop() {
+            updateGame();
+            if (!gameOver) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function jump() {
+            if (!player.isJumping) {
+                player.dy = jumpStrength;
+                player.isJumping = true;
+            }
+        }
+
+        canvas.addEventListener('click', () => {
+            if (!gameStarted) {
+                startGame();
+            } else {
+                jump();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if (gameOver) {
+                    startGame();
+                } else {
+                    jump();
+                }
+            }
+        });
+
+        titarenkoImg.onload = () => {
+            obstacleImg.onload = () => {
+                ctx.fillStyle = '#333';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Click to start!', canvas.width / 2, canvas.height / 2);
+
+                ctx.textAlign = 'left';
+            };
+        };
+    </script>
+</body>
+</html>
